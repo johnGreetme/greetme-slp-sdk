@@ -32,6 +32,9 @@ public:
   // Verifies the integrity of the hardware counter
   bool CheckIntegrity();
 
+  // Debug/Demo Helper: Get the current hardware counter value
+  uint64_t GetCounter();
+
 private:
   Context(); // Private constructor
   uint64_t internal_counter_id;
