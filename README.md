@@ -77,6 +77,8 @@ The SLP SDK does not rely on software variables. It binds cryptographic signatur
 
 For the full 19-page technical specification, read the White Paper.
 
+https://www.uplinklogic.tech/topic/mobile-performance/announcing-state-locked-protocol
+
 ## License
 
 Copyright © 2026 Greetme Technologies LTD. Licensed under the Apache License, Version 2.0.
