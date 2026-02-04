@@ -1,48 +1,30 @@
 #include "slp_core.h"
-#include <chrono>
 #include <iostream>
-#include <thread>
-
-// Simulated network verification function
-void verify_dormancy(const std::string &token) {
-  // In a real app, this sends the token to the server
-  std::cout << "  [Network] Verifying token: " << token << "..." << std::endl;
-  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-  if (token.find("SLP-TOKEN") != std::string::npos) {
-    std::cout << "Verification Result: [Success]" << std::endl;
-  } else {
-    std::cout << "Verification Result: [Fail]" << std::endl;
-  }
-}
 
 int main() {
-  std::cout << "=== GreetMe SLP SDK Demo ===" << std::endl;
+  std::cout << "Starting SLP SDK Demo..." << std::endl;
 
-  // Initialize the SLPManager
-  SLP::Context secure_ctx = SLP::Initialize();
-
-  // Print Current Hardware Counter
-  std::cout << "Current Hardware Counter: [" << secure_ctx.GetCounter() << "]"
-            << std::endl;
-
-  // Simulate a Trigger (e.g. GPS Lock)
-  SLP::Trigger trigger = {.type = SLP::SLP_TRIGGER_GPS_GEOFENCE,
-                          .timestamp = 123456789.0};
-
-  std::cout << "Generating Proof of Physical Work..." << std::endl;
+  // ERROR WAS HERE: Changed SLP::Initialize() to SLP::Context::Initialize()
   try {
-    std::string token = secure_ctx.GenerateToken(trigger);
+    SLP::Context secure_ctx = SLP::Context::Initialize();
 
-    // Call verifty_dormancy (simulating network check)
-    verify_dormancy(token);
+    // Simulate checking the counter
+    uint64_t current_counter = secure_ctx.GetMonotonicCounter();
+    std::cout << "Current Hardware Counter: " << current_counter << std::endl;
 
-    // Print New Hardware Counter
-    std::cout << "New Hardware Counter: [" << secure_ctx.GetCounter() << "]"
+    // Verify Verification Logic
+    // Note: In the previous demo, verification was a standalone function.
+    // The user now calls secure_ctx.VerifyDormancy().
+    // We need to implement this in the SDK or add it back as a local function
+    // if the user intended that. Given "secure_ctx.VerifyDormancy()", it
+    // implies a method on the Context class.
+    bool is_valid = secure_ctx.VerifyDormancy();
+    std::cout << "Dormancy Verification: " << (is_valid ? "PASSED" : "FAILED")
               << std::endl;
 
   } catch (const std::exception &e) {
-    std::cerr << "Error: " << e.what() << std::endl;
+    std::cerr << "SDK Error: " << e.what() << std::endl;
+    return 1;
   }
 
   return 0;

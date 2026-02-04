@@ -33,7 +33,12 @@ public:
   bool CheckIntegrity();
 
   // Debug/Demo Helper: Get the current hardware counter value
-  uint64_t GetCounter();
+  // Renamed from GetCounter to GetMonotonicCounter to match user request
+  uint64_t GetMonotonicCounter();
+
+  // New method: Verify Dormancy (Simulated network check or internal state
+  // check)
+  bool VerifyDormancy();
 
 private:
   Context(); // Private constructor
