@@ -1,6 +1,7 @@
 #ifndef SLP_CORE_H
 #define SLP_CORE_H
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
