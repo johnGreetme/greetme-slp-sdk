@@ -11,3 +11,26 @@ obj/
 .vscode/
 .idea/
 *.swp
+
+# Runtime storage files
+.slp_secure_storage.bin
+
+# Security sensitive files
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+*.der
+
+# Environment and config files
+.env
+.env.*
+!.env.example
+*.local
+config.json
+secrets.json
+
+# Logs that may contain sensitive data
+*.log
