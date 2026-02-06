@@ -3,6 +3,7 @@ build/
 bin/
 lib/
 obj/
+_codeql_build_dir/
 
 # OS specific
 .DS_Store
