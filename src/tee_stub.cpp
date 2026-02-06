@@ -17,7 +17,10 @@ namespace SLP_Internal {
 void SetSecurePermissions(const std::string &filename) {
 #ifndef _WIN32
   // On Unix-like systems, set permissions to 0600 (owner read/write only)
-  chmod(filename.c_str(), S_IRUSR | S_IWUSR);
+  if (chmod(filename.c_str(), S_IRUSR | S_IWUSR) != 0) {
+    std::cerr << "TEE Warning: Failed to set secure permissions on storage file."
+              << std::endl;
+  }
 #endif
   // On Windows, file permissions work differently and default ACLs are
   // generally secure for the current user
@@ -29,6 +32,20 @@ uint64_t ReadCounter() {
   
   if (infile.is_open()) {
     infile >> counter;
+    // Validate that the read operation succeeded
+    if (infile.fail()) {
+      std::cerr << "TEE Warning: Failed to read counter from secure storage. "
+                << "Reinitializing to 0." << std::endl;
+      infile.close();
+      // Reinitialize the file with 0
+      std::ofstream outfile(SECURE_STORAGE_FILE);
+      if (outfile.is_open()) {
+        outfile << 0;
+        outfile.close();
+        SetSecurePermissions(SECURE_STORAGE_FILE);
+      }
+      return 0;
+    }
     infile.close();
   } else {
     // File doesn't exist, initialize it

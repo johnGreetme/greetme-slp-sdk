@@ -1,0 +1,2 @@
+/usr/bin/ar qc libgreetme_slp.a CMakeFiles/greetme_slp.dir/src/slp_manager.cpp.o CMakeFiles/greetme_slp.dir/src/tee_stub.cpp.o
+/usr/bin/ranlib libgreetme_slp.a
