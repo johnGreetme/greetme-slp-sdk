@@ -18,7 +18,42 @@ To remain verifiable on a network, devices today must maintain an active radio c
 
 Unlike standard sleep modes (which leak ~3µW), SLP reduces consumption to the leakage floor of the transistor gates (<100nA) while maintaining cryptographic security[61, 108].
 
-### Architecture Overview
+## Technical Architecture
+
+```text
++-----------------------------------------------------------------------+
+|                       STATE-LOCKED PROTOCOL (SLP)                     |
+|                 Hardware-Gated "Zero-Allocation" Logic                |
++-----------------------------------------------------------------------+
+                                   |
+[ STANDARD STATE ]                 |    [ SLP "DORMANCY" STATE ]
+                                   |
+(1)  CPU: ACTIVE / IDLE            |    (1)  CPU: OFF (0V)
+     RAM: RETENTION (3µW)          |         RAM: OFF (0V)
+     Radio: DRX MONITOR            |         Radio: OFF
+                                   |
+     |  "Vampire Drain"            |         |  "Leakage Only"
+     |  (Continuous Drain)         |         |  (<100nA)
+     v                             |         v
+[ BATTERY ] <------------------+   |    [ GATE LOGIC ] <----(Physical Trigger)--+
+                               |   |         |                                  |
+                               |   |    (2)  Hardware Counter ++                |
+                               |   |         (Monotonic Nonce)                  |
+                               |   |         |                                  |
+                               |   |    (3)  WAKE SIGNAL (IRQ)                  |
+                               |   |         v                                  |
+                               |   |    [ BOOT SEQUENCE ]                       |
+                               |   |         |                                  |
+                               |   |    (4)  Generate Sig(ID + Counter)         |
+                               |   |         |                                  |
+                               |   |    (5)  TRANSMIT BURST --------------------+
+                                   |
++-----------------------------------------------------------------------+
+|  RESULT: 99.2% Reduction in Standby Power vs. 3GPP Rel-17 eDRX        |
++-----------------------------------------------------------------------+
+```
+
+### Protocol Logic Flow
 
 ```mermaid
 %%{init: {'theme': 'neutral', 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'arial'}}}%%
